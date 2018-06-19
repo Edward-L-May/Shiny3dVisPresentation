@@ -3,7 +3,7 @@ title: "Developing Data Products: Final Project"
 author: "Edward May"
 date: "June 18, 2018"
 runtime: shiny
-output: slidy_presentation
+output: ioslides_presentation
 mode: selfcontained
 ---
 
@@ -84,23 +84,4 @@ It is fun to watch the predicted values stay within the cluster of the other dat
 
 ---
 
-
-
-```
-## Loading required package: shiny
-```
-
-```
-## 
-## Attaching package: 'shiny'
-```
-
-```
-## The following object is masked from 'package:git2r':
-## 
-##     tag
-```
-
-```
-## Error in appshot.shiny.appobj(structure(list(httpHandler = function (req) : appshot of Shiny app objects is not yet supported.
-```
+<img src="App.PNG" width=1024" />

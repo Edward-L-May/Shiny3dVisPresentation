@@ -3,7 +3,7 @@ title: "Developing Data Products: Final Project"
 author: "Edward May"
 date: "June 18, 2018"
 runtime: shiny
-output: slidy_presentation
+output: ioslides_presentation
 mode: selfcontained
 ---
 ```{r setup, include=FALSE}
@@ -73,80 +73,4 @@ It is fun to watch the predicted values stay within the cluster of the other dat
 
 ---
 
-
-```{r}
-plot3d <- function(fit) { 
-  
-  require(shiny)  
-  
-  shinyApp(
-    ui = fluidPage(
-            titlePanel("Visualizing a 3D fit: A linear model on mtcars with mpg~am+qsec+wt"),
-    br(),
-    p("Change the slider values to see the resulting predicted mpg with the yellow dot."),
-    br(),
-      fluidRow(style = "padding-bottom: 20px;",
-        column(4, sliderInput("am", label = "Auto = 0 ; Manual = 1:",
-              min = 0.0, max = 1, value = 1, step = 1)),
-        column(4, sliderInput("qsec", label = "quarter mile time",
-              min = min(df$qsec), max = max(df$qsec), 
-              value = mean(df$qsec), step = .05)),
-        column(4, sliderInput("wt", label = "weight",
-              min = min(df$wt), max = max(df$wt), 
-              value = mean(df$wt), step = .01))
-      ),
-      fluidRow(
-          textOutput("text"),
-        plotlyOutput('p', height = "400px")  
-      )
-    ),
-    
-    server = function(input, output, session) {
-      
-      # Combine the selected variables into a new data frame
-      selectedData <- reactive({
-        dataset[, c(input$xcol, input$ycol)]
-      })
-      
-      clusters <- reactive({
-        kmeans(selectedData(), input$clusters)
-      })
-      
-      
-      plotdata <- reactive({
-        newdata <- data.frame(qsec=input$qsec,am=input$am,wt=input$wt)
-        plotdata <- newdata
-        plotdata$mpg <- predict(fit,newdata)
-        plotdata
-      })
-      
-      output$text <- renderText({
-        newdata <- data.frame(qsec=input$qsec,am=input$am,wt=input$wt)
-        paste("The predicted mpg is",round(predict(fit,newdata),1))
-      })
-        
-      output$p <- renderPlotly({
-        #par(mar = c(5.1, 4.1, 0, 1))
-        plot_ly(mtcars, x = ~qsec, y = ~wt, z = ~mpg, color = ~am,
-             colors = c('#BF382A', '#0C4B8E')) %>%
-            add_markers() %>%
-            layout(scene = list(xaxis = list(title = 'qsec'),
-                     yaxis = list(title = 'wt'),
-                     zaxis = list(title = 'mpg'))) %>%
-  add_trace( data = plotdata(),
-                 showlegend = FALSE,
-                 color = ~am, 
-                 mode = 'markers',
-                 x = ~qsec, 
-                 y = ~wt,
-                 z = ~mpg)
-      })
-    },
-    
-    options = list(height = 700)
-  )
-}
-
-plot3d(fit)
-
-```
+<img src="App.PNG" width=1024" />
