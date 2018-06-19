@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Developing Data Products: Final Project</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Developing Data Products: Final Project">
+  <meta name="author" content="Edward May">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Developing Data Products: Final Project</h1>
+    <h2></h2>
+    <p>Edward May<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <article data-timings="">
+    <p>This presentation shows the user a 3D visualization of a linear model from the mtcars dataset using the formula: mpg~am+qsec+wt.  This model was chosen by an optimization routine encapsulated in the function:</p>
+
+<pre><code class="r">bestModel &lt;- function(df,dv){
+    require(stats)
+    require(MuMIn)
+    #fits a best model to a multivariable regression problem
+    myformula &lt;- paste(dv,&quot;~.&quot;,collapse = &quot;&quot;)
+    full.model &lt;- lm(formula=as.formula(myformula), data=df, na.action = &quot;na.fail&quot;)
+    result &lt;- dredge(full.model)
+    return(get.models(result,subset=1)[[1]])
+}
+</code></pre>
+
+<p>-Inputs: A data frame, and a dependant variable from within the data frame</p>
+
+<p>-Outputs: An object of class &#39;lm&#39; which can then be used in prediction. </p>
+
+<p>The function uses a function from the R-package &#39;MuMIn&#39; called dredge() which interates over all the combinations of the independant variables and finds the combination with the best results.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <article data-timings="">
+    <p>###Lets run the code</p>
+
+<pre><code class="r">df &lt;- mtcars
+fit &lt;- bestModel(df,&quot;mpg&quot;)
+</code></pre>
+
+<pre><code>## Fixed term is &quot;(Intercept)&quot;
+</code></pre>
+
+<pre><code class="r">summary(fit)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ am + qsec + wt + 1, data = df, na.action = &quot;na.fail&quot;)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.4811 -1.5555 -0.7257  1.4110  4.6610 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   9.6178     6.9596   1.382 0.177915    
+## am            2.9358     1.4109   2.081 0.046716 *  
+## qsec          1.2259     0.2887   4.247 0.000216 ***
+## wt           -3.9165     0.7112  -5.507 6.95e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.459 on 28 degrees of freedom
+## Multiple R-squared:  0.8497, Adjusted R-squared:  0.8336 
+## F-statistic: 52.75 on 3 and 28 DF,  p-value: 1.21e-11
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <article data-timings="">
+    <p>-Results:</p>
+
+<p>We see that the final model used only &quot;am&quot;, &quot;qsec&quot;, and &quot;wt&quot; in the final model and obtained an 85% R<sup>2</sup> value!</p>
+
+<p>-Visualization</p>
+
+<p>In the next slide, we will demonstrate the shinyapp found here:
+<a href="https://edward-l-may.shinyapps.io/DDP-ELM-visualize3dmodel/">https://edward-l-may.shinyapps.io/DDP-ELM-visualize3dmodel/</a>
+The 3D plot shows the three variables plotted with the z-axis being MPG.  The yellow dot in the center is the predicted value based on the inputs for the variables from the sliders.</p>
+
+<p>It is fun to watch the predicted values stay within the cluster of the other data values.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <article data-timings="">
+    <pre><code>## Loading required package: shiny
+</code></pre>
+
+<pre><code>## 
+## Attaching package: &#39;shiny&#39;
+</code></pre>
+
+<pre><code>## The following object is masked from &#39;package:git2r&#39;:
+## 
+##     tag
+</code></pre>
+
+<pre><code>## Error in appshot.shiny.appobj(structure(list(httpHandler = function (req) : appshot of Shiny app objects is not yet supported.
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='NA'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='NA'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='NA'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='NA'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
